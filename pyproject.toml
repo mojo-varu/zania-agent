@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "zania-agent"
+version = "0.1.0"
+description = ""
+authors = ["Varunendra Singh <pratap.varu@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13"
+requests = "^2.32.3"
+loguru = "^0.7.2"
+python-decouple = "^3.8"
+python-dotenv = "^1.0.1"
+langchain = "^0.2.6"
+langchain-chroma = "^0.1.2"
+langchain-community = "^0.2.6"
+pypdf = "^4.2.0"
+langchain-mistralai = "^0.1.9"
+langchainhub = "^0.1.20"
+streamlit = "^1.36.0"
+protobuf = "3.20.2"
+langchain-openai = "^0.1.14"
+fastembed = "^0.3.1"
+watchdog = "^4.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
