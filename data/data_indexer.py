@@ -8,6 +8,7 @@ from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 from typing import List, Dict, Any
 from config import Config
 from langchain_community.document_loaders import PyPDFLoader
+from langchain_openai import OpenAIEmbeddings
 
 DATA_SOURCE_FILE = 'handbook.pdf'
 CHUNK_SZIE = 300
@@ -26,11 +27,12 @@ class DataIndexer():
     """
     def __init__(self, source_file_path=None):    
         try:
-            self.embedding_model = FastEmbedEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+            self.embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
+            # self.embedding_model = FastEmbedEmbeddings(model_name=EMBEDDING_MODEL_NAME)
             
-            if self._are_embeddings_already_loaded():
-                logger.info(f"Embeddings already exists at {Config.VECTOR_DB_PATH}")
-                return
+            # if self._are_embeddings_already_loaded():
+            #     logger.info(f"Embeddings already exists at {Config.VECTOR_DB_PATH}")
+            #     return
 
             logger.info(f"Reading raw documents from {source_file_path}")
             raw_documents = PyPDFLoader(source_file_path).load_and_split()
@@ -42,8 +44,8 @@ class DataIndexer():
             )
 
             self.documents = text_splitter.split_documents(raw_documents)
-            logger.debug(f"Documents post split len {len(self.documents)}")
-
+            logger.info(f"{len(self.documents)} documents post spliting")
+            logger.info(f"Now loading embeddings to {Config.VECTOR_DB_PATH}")
             Chroma.from_documents(self.documents, 
                                 embedding=self.embedding_model, 
                                 collection_name="zania-vectorstore",
@@ -67,7 +69,12 @@ class DataIndexer():
 
 
     def get_retriever(self):
+        """
+            Responsible to provide a retriver with specific search method like similarity search, MMR, score thresold
+        """
         db = self._get_vectorstore()
-        # TODO configure different types of retriever here, 
-        # depedning upon the type semantic search to perform
-        return  db.as_retriever(search_kwargs={"k":2}) #search_type="mmr"
+        # TODO configure different types of retriever here based ot type of search method
+        # return  db.as_retriever(search_type="mmr")
+        # return  db.as_retriever(search_type="similarity_score_threshold", search_kwargs={"score_threshold": 0.5})
+        return  db.as_retriever(search_kwargs={"k":3})
+    
