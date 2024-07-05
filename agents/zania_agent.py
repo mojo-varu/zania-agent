@@ -5,6 +5,9 @@ from loguru import logger
 
 
 class ZaniaAgent():
+    """
+       Responsible for defining the what the agent is and what it can do via tools
+    """
     prompt = ChatPromptTemplate.from_messages(
     [
         (
@@ -37,9 +40,8 @@ class ZaniaAgent():
         logger.debug(f"Zania agent __call__ {agent_inputs}")
         
         # output = self.agent_executor.batch(agent_inputs)
+        # output = self.agent_executor.invoke(agent_inputs[0], {"callbacks": [callback]})
         if agent_inputs:
-            output = self.agent_executor.invoke(
-                agent_inputs[0], {"callbacks": [callback]}
-            )
+            output = list(map(lambda item: self.agent_executor.invoke(item, {"callbacks": [callback]}), agent_inputs))
             logger.debug(f"agent_executor.batch output {output}")
         

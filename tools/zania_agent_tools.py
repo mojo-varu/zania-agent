@@ -7,6 +7,9 @@ from langchain.agents import tool
 
 
 def get_retriver_tool(retriever):
+    """
+    Responsible for creating a tool based on retriever and description provided.
+    """
     return create_retriever_tool(
         retriever,
         "search_indexed_pdf_data",
@@ -17,7 +20,7 @@ def get_retriver_tool(retriever):
 @tool
 def send_slack_message(payload: str) -> str:
     """
-    Helps in send any message provided as param to a slack channel using slack webhook.
+    Responsible for sending a message as provided in parameter to a slack channel using slack webhook.
     """
     try:
         response = requests.post(Config.SLACK_WEBHOOK_URL, 

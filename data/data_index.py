@@ -14,30 +14,26 @@ CHUNK_SZIE = 300
 CHUNK_OVERLAP = 0
 TEXT_SEPARATORS = ["\n\n", "\n", " ", ""]
 EMBEDDING_MODEL_NAME = "BAAI/bge-base-en-v1.5"
-COLLECTION_NAME="zania",
-
 # SCORE_THRESOLD = 0.5
 
-# os.environ["MISTRAL_API_KEY"] = Config.MISTRAL_API_KEY
-os.environ["OPENAI_API_KEY"] = Config.OPENAI_API_KEY
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
-LLM_MDOEL_NAME = "mistral-large-latest"
 
 class DataIndexer():
+    """
+        Responsible for the followings around indexing of PDF data-
+        1. Reading data from text data from a PDF file and generating chunks
+        2. Generate vector embeddings of chuncks and index them into a vector store
+        3. Provide a retriver to fetch docs based on semantic seach condition used
+    """
     def __init__(self, source_file_path=None):    
         try:
             self.embedding_model = FastEmbedEmbeddings(model_name=EMBEDDING_MODEL_NAME)
             
-            # if self._are_embeddings_already_loaded():
-            #     logger.info(f"Embeddings already exists at {Config.VECTOR_DB_PATH}")
-            #     return
+            if self._are_embeddings_already_loaded():
+                logger.info(f"Embeddings already exists at {Config.VECTOR_DB_PATH}")
+                return
 
             logger.info(f"Reading raw documents from {source_file_path}")
             raw_documents = PyPDFLoader(source_file_path).load_and_split()
-
-            # logger.debug(f"Raw documents len {len(raw_documents)}")
-
             text_splitter = RecursiveCharacterTextSplitter(
                 separators= TEXT_SEPARATORS,
                 chunk_size = CHUNK_SZIE,
@@ -72,42 +68,6 @@ class DataIndexer():
 
     def get_retriever(self):
         db = self._get_vectorstore()
-        # TODO configure different types of retriever here, depedning upon the type semantic search to perform
+        # TODO configure different types of retriever here, 
+        # depedning upon the type semantic search to perform
         return  db.as_retriever(search_kwargs={"k":2}) #search_type="mmr"
-
-
-
-# def format_docs(docs):
-#         return "\n\n".join(doc.page_content for doc in docs)
-
-
-
-# def parse(output):
-#     # If no function was invoked, return to user
-#     if "function_call" not in output.additional_kwargs:
-#         return AgentFinish(return_values={"output": output.content}, log=output.content)
-
-#     # Parse out the function call
-#     function_call = output.additional_kwargs["function_call"]
-#     name = function_call["name"]
-#     inputs = json.loads(function_call["arguments"])
-
-#     # If the Response function was invoked, return to the user with the function inputs
-#     if name == "Response":
-#         return AgentFinish(return_values=inputs, log=str(function_call))
-#     # Otherwise, return an agent action
-#     else:
-#         return AgentActionMessageLog(
-#             tool=name, tool_input=inputs, log="", message_log=[output]
-#         )
-
-
-# class Response(BaseModel):
-#     """Final response to the question being asked"""
-
-#     answer: str = Field(description="The final answer to respond to the user")
-#     sources: List[int] = Field(
-#         description="List of page chunks that contain answer to the question. Only include a page chunk if it contains relevant information"
-#     )
-
-
