@@ -17,16 +17,17 @@ An AI agent that leverages the capabilities of a large language model and is cap
 
 ### Bugs & Fixes -
 1. Currently the when the data is not found, `Data Not Available` is not being sent over slack. Need to identify the root cause.
+2. The current chat window is dumb, need to add callabck for llm based responses.
 
 ### TODOs & Improvements - 
 The project contains `#TODO` that indicate the improvements that can be furthur taken up. Broadly, these improvements can be broken down into two parts, Accuracy and User Experience. Below are some suggestions in the same.
 
 ##### For Accuracy, 
-1. Try different approaches of similarity search or better do query decomposition. Evaluation on proper chunk size given different structure of data across PDF files.
-2. More effective prompt for the agent, currently its just one chat prompt, break it down on responsibilty and add a prompt routing mechanism. 
-3. Adding output parsing to the llm result for consistent structure.
+1. Try different approaches to optimized the results of similarity search. Evaluation on proper chunk size across different PDF files as vary in the structure and fomatting of the data and page sizez.
+2. More effective prompt for the agent, currently its just one chatprompt template, Its better to break this down into different prompts by leveraging a prompt routing mechanism. 
+3. Adding output parsing to the llm result for consistent output structure.
 
 ##### For enhacement of the user experience,
-1. Imporve conversation responses from agent by providing callbacks for the input actions perfromed by the user. 
-2. Using Slack web api over incoming webhook for better customisation of the message sent over channel.
-3. Streamlit reruns are tricky, better session state management to provide better experience.
+1. Add dynamic conversation responses from agent using LLM, add message callbacks for the input actions perfromed by the user. 
+2. Using Slack web api over incoming webhook URL for better customisation of the message sent over channel.
+3. Streamlit reruns are tricky and carets glitches, add better session state management to provide better user experience. Or take the inputs as part of chat rather than putsde actions.
